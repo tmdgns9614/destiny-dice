@@ -1,12 +1,13 @@
 :root {
-  --bg: #121826;
-  --panel: #1b2333;
-  --panel-soft: #26324a;
-  --text: #f1f5ff;
-  --muted: #9fb0cf;
-  --accent: #48d2ff;
-  --good: #5ee08f;
-  --warn: #ffcc66;
+  --bg: #020f2c;
+  --panel: #091937;
+  --panel-soft: #162746;
+  --line: #35548a;
+  --text: #e5efff;
+  --muted: #7f95bf;
+  --accent: #42b6ff;
+  --good: #61d48f;
+  --warn: #d5ad52;
 }
 
 * {
@@ -16,30 +17,38 @@
 body {
   margin: 0;
   min-height: 100vh;
-  font-family: "Pretendard", "Noto Sans KR", sans-serif;
+  font-family: "Noto Sans KR", sans-serif;
   color: var(--text);
-  background: radial-gradient(circle at 20% 20%, #1f2c43, var(--bg));
+  background: radial-gradient(
+    circle at 20% 10%,
+    #1d2f4f 0%,
+    #091735 30%,
+    #020b20 100%
+  );
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 18px;
 }
 
+/* ===============================
+   앱 프레임
+================================ */
 .app {
-  width: min(960px, 100%);
-  background: rgba(11, 16, 28, 0.86);
-  border: 1px solid rgba(148, 177, 230, 0.24);
-  border-radius: 18px;
-  padding: 24px;
-  box-shadow: 0 20px 60px rgba(4, 6, 12, 0.55);
-  overflow: hidden;
+  width: min(1080px, 100%);
+  min-height: 780px;
+  background: rgba(5, 16, 42, 0.94);
+  border: 1px solid rgba(88, 124, 184, 0.45);
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
 }
 
 .screen {
   display: none;
   opacity: 0;
   transform: translateY(12px) scale(0.98);
-  transition: opacity 0.35s ease, transform 0.35s ease;
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .screen.active {
@@ -49,15 +58,21 @@ body {
 }
 
 h1, h2 {
-  margin-top: 0;
+  margin: 0;
 }
 
+/* ===============================
+   공통 텍스트
+================================ */
 .subtitle,
 .hint,
 .event-log {
   color: var(--muted);
 }
 
+/* ===============================
+   버튼
+================================ */
 .button-row,
 .room-controls,
 .game-controls {
@@ -69,7 +84,7 @@ h1, h2 {
 button {
   border: 0;
   border-radius: 10px;
-  padding: 12px 18px;
+  padding: 12px 20px;
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
@@ -82,47 +97,124 @@ button:hover:enabled {
 }
 
 button:disabled {
-  opacity: 0.4;
+  opacity: 0.45;
   cursor: not-allowed;
 }
 
 .primary {
-  background: linear-gradient(135deg, #4ecfff, #3086f0);
-  color: #041429;
+  background: linear-gradient(180deg, #58c6ff, #2b98e8);
+  color: #022241;
 }
 
 .secondary {
-  background: linear-gradient(135deg, #8c9dc2, #687ca5);
-  color: #f5fbff;
+  background: linear-gradient(180deg, #7f90b4, #5f7198);
+  color: #f5f9ff;
 }
 
+/* ===============================
+   로비 / 방
+================================ */
+#room-screen {
+  min-height: 720px;
+}
+
+.panel-block {
+  background: rgba(10, 27, 59, 0.95);
+  border: 1px solid rgba(63, 93, 145, 0.8);
+  border-radius: 16px;
+  min-height: 680px;
+  padding: 22px;
+}
+
+.hidden {
+  display: none;
+}
+
+.lobby-tabs {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.tab-btn {
+  border-radius: 12px;
+  background: #96b4d6;
+  color: #1d2b45;
+  padding: 12px 24px;
+  font-weight: 700;
+}
+
+.tab-btn.active {
+  background: #627da8;
+  color: #e8f0ff;
+  box-shadow: inset 0 0 0 2px rgba(14, 30, 66, 0.45);
+}
+
+.lobby-list {
+  display: grid;
+  gap: 14px;
+}
+
+.lobby-card {
+  background: #10223f;
+  border: 1px solid #47659f;
+  border-radius: 14px;
+  padding: 18px;
+}
+
+.lobby-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.lobby-title-row h3 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.lobby-count {
+  background: #1a2f52;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-weight: 700;
+}
+
+/* ===============================
+   플레이어 카드
+================================ */
 .room-header {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 .badge {
-  background: #2e3a54;
-  border: 1px solid #526184;
+  background: #2e4065;
+  border: 1px solid #516a9b;
   border-radius: 999px;
   padding: 6px 12px;
-  font-size: 0.82rem;
+  font-weight: 700;
+  font-size: 0.85rem;
 }
 
 .player-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 10px;
-  margin: 16px 0 18px;
+  gap: 12px;
+  margin: 10px 0 16px;
+  background: rgba(24, 38, 66, 0.52);
+  border: 1px solid #27406f;
+  border-radius: 10px;
+  padding: 10px;
 }
 
 .player-card {
-  background: var(--panel);
-  border: 1px solid #32415f;
-  border-radius: 10px;
-  padding: 10px;
+  background: #1a2a46;
+  border: 1px solid #2f466f;
+  border-radius: 14px;
+  padding: 14px;
   display: grid;
   gap: 6px;
 }
@@ -141,6 +233,9 @@ button:disabled {
   color: var(--warn);
 }
 
+/* ===============================
+   게임
+================================ */
 .turn-header {
   background: var(--panel-soft);
   border: 1px solid #3f547b;
@@ -157,7 +252,7 @@ button:disabled {
 .turn-chip.active {
   color: var(--accent);
   font-weight: 800;
-  text-shadow: 0 0 10px rgba(72, 210, 255, 0.45);
+  text-shadow: 0 0 10px rgba(66, 182, 255, 0.45);
 }
 
 #board {
@@ -179,6 +274,9 @@ button:disabled {
   padding: 0 14px;
 }
 
+/* ===============================
+   애니메이션
+================================ */
 .rolling {
   animation: spin 0.55s ease;
 }
@@ -186,4 +284,14 @@ button:disabled {
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+/* ===============================
+   반응형
+================================ */
+@media (max-width: 900px) {
+  .room-header h2,
+  .lobby-title-row h3 {
+    font-size: 1.4rem;
+  }
 }
