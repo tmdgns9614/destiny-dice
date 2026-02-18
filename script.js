@@ -1,0 +1,342 @@
+const screens = {
+  start: document.getElementById('start-screen'),
+  room: document.getElementById('room-screen'),
+  game: document.getElementById('game-screen'),
+};
+
+const el = {
+  singleBtn: document.getElementById('single-btn'),
+  multiBtn: document.getElementById('multi-btn'),
+  createRoomBtn: document.getElementById('create-room-btn'),
+  quickJoinBtn: document.getElementById('quick-join-btn'),
+  lobbyList: document.getElementById('lobby-list'),
+  lobbyMsg: document.getElementById('lobby-msg'),
+  lobbyPanel: document.getElementById('lobby-panel'),
+  roomPanel: document.getElementById('room-panel'),
+  roomTitle: document.getElementById('room-title'),
+  playerList: document.getElementById('player-list'),
+  readyBtn: document.getElementById('ready-btn'),
+  startGameBtn: document.getElementById('start-game-btn'),
+  leaveRoomBtn: document.getElementById('leave-room-btn'),
+  roomHint: document.getElementById('room-hint'),
+  turnDisplay: document.getElementById('turn-display'),
+  diceBtn: document.getElementById('dice-btn'),
+  diceResult: document.getElementById('dice-result'),
+  eventLog: document.getElementById('event-log'),
+  board: document.getElementById('board'),
+};
+
+const ctx = el.board.getContext('2d');
+
+const state = {
+  myName: randomPlayerName(),
+  mode: null,
+  rooms: [],
+  activeRoomId: null,
+  currentTurn: 0,
+  isRolling: false,
+  boardCells: 16,
+  players: [],
+  path: [],
+};
+
+function randomPlayerName() {
+  return `Player${Math.floor(1000 + Math.random() * 9000)}`;
+}
+
+function randomRoomId() {
+  return `${Math.floor(1000 + Math.random() * 9000)}`;
+}
+
+function switchScreen(target) {
+  Object.values(screens).forEach((screen) => screen.classList.remove('active'));
+  screens[target].classList.add('active');
+}
+
+function setupSingle() {
+  state.mode = 'single';
+  state.players = [
+    { name: state.myName, pos: 0, ready: true, isBot: false, isHost: true, color: '#4ecfff' },
+    { name: 'Bot', pos: 0, ready: true, isBot: true, isHost: false, color: '#ff7b72' },
+  ];
+  enterGame();
+}
+
+function openLobby() {
+  state.mode = 'multi';
+  state.activeRoomId = null;
+  renderLobby();
+  el.roomPanel.classList.add('hidden');
+  el.lobbyPanel.classList.remove('hidden');
+  switchScreen('room');
+}
+
+function createRoom() {
+  const hostName = state.myName;
+  const room = {
+    id: randomRoomId(),
+    name: `${hostName.toLowerCase()}의 방`,
+    hostName,
+    players: [{ name: hostName, ready: false, isHost: true, isBot: false, color: '#4ecfff' }],
+  };
+
+  state.rooms.push(room);
+  enterRoom(room.id);
+}
+
+function quickJoinRoom() {
+  const room = state.rooms.find((item) => item.players.length < 4 && item.hostName !== state.myName);
+  if (!room) {
+    el.lobbyMsg.textContent = '빠른 입장 가능한 방이 없습니다. (봇 방은 생성되지 않습니다)';
+    return;
+  }
+  joinRoom(room.id);
+}
+
+function joinRoom(roomId) {
+  const room = state.rooms.find((item) => item.id === roomId);
+  if (!room) return;
+
+  const alreadyIn = room.players.some((player) => player.name === state.myName);
+  if (!alreadyIn && room.players.length < 4) {
+    room.players.push({ name: state.myName, ready: false, isHost: false, isBot: false, color: '#ffd166' });
+  }
+
+  enterRoom(room.id);
+}
+
+function enterRoom(roomId) {
+  state.activeRoomId = roomId;
+  state.players = getActiveRoom().players;
+  renderRoom();
+  renderLobby();
+  el.lobbyPanel.classList.add('hidden');
+  el.roomPanel.classList.remove('hidden');
+}
+
+function leaveRoom() {
+  const room = getActiveRoom();
+  if (room) {
+    room.players = room.players.filter((player) => player.name !== state.myName);
+    if (room.players.length === 0) {
+      state.rooms = state.rooms.filter((item) => item.id !== room.id);
+    }
+  }
+
+  state.activeRoomId = null;
+  state.players = [];
+  renderLobby();
+  el.roomPanel.classList.add('hidden');
+  el.lobbyPanel.classList.remove('hidden');
+}
+
+function getActiveRoom() {
+  return state.rooms.find((room) => room.id === state.activeRoomId);
+}
+
+function isMeHost() {
+  const room = getActiveRoom();
+  if (!room) return false;
+  return room.hostName === state.myName;
+}
+
+function renderLobby() {
+  el.lobbyList.innerHTML = '';
+
+  if (state.rooms.length === 0) {
+    el.lobbyMsg.textContent = '생성된 방이 없습니다. 먼저 방을 만들어 주세요.';
+    return;
+  }
+
+  el.lobbyMsg.textContent = '아래 방 목록에서 입장할 방을 선택하세요.';
+
+  state.rooms.forEach((room) => {
+    const card = document.createElement('article');
+    card.className = 'lobby-card';
+    card.innerHTML = `
+      <div class="lobby-title-row">
+        <h3>${room.name}</h3>
+        <span class="lobby-count">👤 [${room.players.length}/4] 접속</span>
+      </div>
+      <p>${room.hostName}</p>
+      <button class="primary" data-room-id="${room.id}">입장</button>
+    `;
+
+    const joinBtn = card.querySelector('button');
+    joinBtn.addEventListener('click', () => joinRoom(room.id));
+
+    el.lobbyList.appendChild(card);
+  });
+}
+
+function renderRoom() {
+  const room = getActiveRoom();
+  if (!room) return;
+
+  const amHost = isMeHost();
+  const me = room.players.find((player) => player.name === state.myName);
+
+  el.roomTitle.textContent = room.name;
+  el.playerList.innerHTML = '';
+
+  room.players.forEach((player, index) => {
+    const card = document.createElement('article');
+    card.className = 'player-card';
+    card.innerHTML = `
+      <div class="player-top">
+        <strong>${player.name}</strong>
+        <span>${player.isHost ? 'HOST' : 'GUEST'}</span>
+      </div>
+      <div class="${player.ready ? 'status-ready' : 'status-wait'}">${player.ready ? '준비 완료' : '대기 중'}</div>
+      <div class="hint">👤 [${index + 1}/4] 접속</div>
+    `;
+    el.playerList.appendChild(card);
+  });
+
+  const allReady = room.players.length > 1 && room.players.every((player) => player.ready || player.isHost);
+  el.startGameBtn.disabled = !(amHost && allReady);
+  el.startGameBtn.style.display = amHost ? 'inline-flex' : 'none';
+  el.leaveRoomBtn.style.display = amHost ? 'inline-flex' : 'none';
+  el.readyBtn.style.display = me ? 'inline-flex' : 'none';
+  el.readyBtn.textContent = me && me.ready ? '준비 취소' : '준비';
+
+  el.roomHint.textContent = amHost
+    ? '방장입니다. 모든 플레이어 준비 완료 시 게임을 시작할 수 있습니다.'
+    : '게스트입니다. 준비 버튼으로 상태를 변경하세요.';
+}
+
+function buildPath() {
+  const startX = 80;
+  const startY = 80;
+  const spacing = 48;
+  const widthCount = 8;
+  const path = [];
+
+  for (let i = 0; i < state.boardCells; i += 1) {
+    const row = Math.floor(i / widthCount);
+    const col = row % 2 === 0 ? i % widthCount : widthCount - 1 - (i % widthCount);
+    path.push({ x: startX + col * spacing, y: startY + row * spacing });
+  }
+
+  state.path = path;
+}
+
+function drawBoard() {
+  ctx.clearRect(0, 0, el.board.width, el.board.height);
+
+  state.path.forEach((cell, i) => {
+    ctx.fillStyle = i % 2 === 0 ? '#223451' : '#1a2a42';
+    ctx.fillRect(cell.x - 18, cell.y - 18, 36, 36);
+    ctx.strokeStyle = '#38527a';
+    ctx.strokeRect(cell.x - 18, cell.y - 18, 36, 36);
+  });
+
+  state.players.forEach((player, idx) => {
+    const pos = state.path[player.pos];
+    const offset = idx * 11 - 8;
+    ctx.beginPath();
+    ctx.fillStyle = player.color;
+    ctx.arc(pos.x + offset, pos.y - 22, 10, 0, Math.PI * 2);
+    ctx.fill();
+  });
+}
+
+function renderTurn() {
+  const chips = state.players
+    .map((p, i) => `<span class="turn-chip ${i === state.currentTurn ? 'active' : ''}">${p.name}</span>`)
+    .join(' | ');
+  el.turnDisplay.innerHTML = `[ 🎲 ${chips} ]`;
+
+  const current = state.players[state.currentTurn];
+  const myTurn = current?.name === state.myName;
+  el.diceBtn.disabled = !myTurn || state.isRolling;
+}
+
+async function animateMove(playerIndex, steps) {
+  const player = state.players[playerIndex];
+
+  for (let i = 0; i < steps; i += 1) {
+    await new Promise((resolve) => setTimeout(resolve, 220));
+    player.pos = Math.min(player.pos + 1, state.boardCells - 1);
+    drawBoard();
+  }
+}
+
+function processCellEvent(playerIndex) {
+  const player = state.players[playerIndex];
+  if (player.pos === state.boardCells - 1) {
+    el.eventLog.textContent = `🏆 ${player.name} 승리! 다시 굴려도 됩니다.`;
+    player.pos = 0;
+  } else if (Math.random() < 0.25) {
+    player.pos = Math.max(0, player.pos - 1);
+    el.eventLog.textContent = `⚡ 이벤트! ${player.name} 뒤로 1칸 이동.`;
+  } else {
+    el.eventLog.textContent = `${player.name}의 위치: ${player.pos}칸`;
+  }
+  drawBoard();
+}
+
+async function rollDice() {
+  if (state.isRolling) return;
+  const player = state.players[state.currentTurn];
+  if (!player) return;
+
+  const myTurn = player.name === state.myName;
+  if (!myTurn && !player.isBot) return;
+
+  state.isRolling = true;
+  renderTurn();
+
+  el.diceBtn.classList.add('rolling');
+  const value = Math.floor(Math.random() * 6) + 1;
+
+  await new Promise((resolve) => setTimeout(resolve, 550));
+  el.diceBtn.classList.remove('rolling');
+  el.diceResult.textContent = `결과: ${value}`;
+
+  await animateMove(state.currentTurn, value);
+  processCellEvent(state.currentTurn);
+
+  state.currentTurn = (state.currentTurn + 1) % state.players.length;
+  state.isRolling = false;
+  renderTurn();
+
+  const next = state.players[state.currentTurn];
+  if (next?.isBot) {
+    setTimeout(() => {
+      rollDice();
+    }, 750);
+  }
+}
+
+function enterGame() {
+  state.players = structuredClone(getActiveRoom()?.players || state.players);
+  buildPath();
+  state.players.forEach((player) => {
+    player.pos = 0;
+  });
+  state.currentTurn = 0;
+  el.diceResult.textContent = '결과: -';
+  el.eventLog.textContent = '게임 시작! 자신의 턴에 주사위를 굴리세요.';
+  drawBoard();
+  renderTurn();
+  switchScreen('game');
+}
+
+el.singleBtn.addEventListener('click', setupSingle);
+el.multiBtn.addEventListener('click', openLobby);
+el.createRoomBtn.addEventListener('click', createRoom);
+el.quickJoinBtn.addEventListener('click', quickJoinRoom);
+el.leaveRoomBtn.addEventListener('click', leaveRoom);
+el.readyBtn.addEventListener('click', () => {
+  const room = getActiveRoom();
+  if (!room) return;
+
+  const me = room.players.find((player) => player.name === state.myName);
+  if (!me) return;
+
+  me.ready = !me.ready;
+  renderRoom();
+});
+el.startGameBtn.addEventListener('click', enterGame);
+el.diceBtn.addEventListener('click', rollDice);

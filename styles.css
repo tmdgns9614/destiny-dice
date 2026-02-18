@@ -1,0 +1,239 @@
+:root {
+  --bg: #020f2c;
+  --panel: #091937;
+  --panel-soft: #162746;
+  --line: #35548a;
+  --text: #e5efff;
+  --muted: #7f95bf;
+  --accent: #42b6ff;
+  --warn: #d5ad52;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Noto Sans KR", sans-serif;
+  color: var(--text);
+  background: radial-gradient(circle at 20% 10%, #1d2f4f 0%, #091735 30%, #020b20 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+}
+
+.app {
+  width: min(1080px, 100%);
+  min-height: 780px;
+  background: rgba(5, 16, 42, 0.94);
+  border: 1px solid rgba(88, 124, 184, 0.45);
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+}
+
+.screen { display: none; }
+.screen.active { display: block; }
+
+h1, h2 { margin: 0; }
+
+.subtitle,
+.hint,
+.event-log {
+  color: var(--muted);
+}
+
+.button-row,
+.room-controls,
+.game-controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+button {
+  border: 0;
+  border-radius: 10px;
+  padding: 12px 20px;
+  font-size: 1.03rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+button:hover:enabled { filter: brightness(1.08); }
+button:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.primary {
+  background: linear-gradient(180deg, #58c6ff, #2b98e8);
+  color: #022241;
+}
+
+.secondary {
+  background: linear-gradient(180deg, #7f90b4, #5f7198);
+  color: #f5f9ff;
+}
+
+#room-screen {
+  min-height: 720px;
+}
+
+.panel-block {
+  background: rgba(10, 27, 59, 0.95);
+  border: 1px solid rgba(63, 93, 145, 0.8);
+  border-radius: 16px;
+  min-height: 680px;
+  padding: 22px;
+}
+
+.hidden { display: none; }
+
+.lobby-tabs {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.tab-btn {
+  border-radius: 12px;
+  background: #96b4d6;
+  color: #1d2b45;
+  padding: 12px 24px;
+}
+
+.tab-btn.active {
+  background: #627da8;
+  color: #e8f0ff;
+  box-shadow: inset 0 0 0 2px rgba(14, 30, 66, 0.45);
+}
+
+.lobby-list {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 10px;
+}
+
+.lobby-card {
+  background: #10223f;
+  border: 1px solid #47659f;
+  border-radius: 14px;
+  padding: 18px;
+}
+
+.lobby-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.lobby-title-row h3 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.lobby-count {
+  background: #1a2f52;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-weight: 700;
+}
+
+.room-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.room-header h2 {
+  font-size: 2.7rem;
+}
+
+.badge {
+  background: #2e4065;
+  border: 1px solid #516a9b;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-weight: 700;
+}
+
+.player-grid {
+  display: grid;
+  gap: 12px;
+  margin: 10px 0 16px;
+  background: rgba(24, 38, 66, 0.52);
+  border: 1px solid #27406f;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.player-card {
+  background: #1a2a46;
+  border: 1px solid #2f466f;
+  border-radius: 14px;
+  padding: 14px;
+}
+
+.player-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.8rem;
+  margin-bottom: 8px;
+}
+
+.player-name {
+  color: #d7e4ff;
+  font-size: 2.1rem;
+}
+
+.status-ready {
+  color: #61d48f;
+  font-size: 1.8rem;
+}
+
+.status-wait {
+  color: var(--warn);
+  font-size: 1.8rem;
+}
+
+.turn-header {
+  background: var(--panel-soft);
+  border: 1px solid #3f547b;
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+}
+
+.turn-chip { padding: 0 4px; border-radius: 8px; }
+.turn-chip.active { color: var(--accent); font-weight: 800; }
+
+#board {
+  width: 100%;
+  max-width: 880px;
+  border: 1px solid #3a4d72;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #18253b, #101828);
+  display: block;
+  margin: 0 auto;
+}
+
+.dice-result {
+  display: flex;
+  align-items: center;
+  background: var(--panel);
+  border: 1px solid #32415f;
+  border-radius: 10px;
+  padding: 0 14px;
+}
+
+.rolling { animation: spin 0.55s ease; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+@media (max-width: 900px) {
+  .room-header h2,
+  .lobby-title-row h3 { font-size: 1.7rem; }
+  .player-top, .player-name, .status-ready, .status-wait { font-size: 1.1rem; }
+}
