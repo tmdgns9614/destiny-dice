@@ -21,7 +21,7 @@ UI는 끄투와 마크에서 살짝 영감을 받아 직관적으로 디자인�
 
 ## 플레이 방법
 - GitHub Pages에서 바로 실행:  
-[https://오렌지파이어.github.io/destiny-dice/](https://오렌지파이어.github.io/destiny-dice/)  
+[https://tmdgns9614.github.io/destiny-dice/](https://tmdgns9614.github.io/destiny-dice/)  
 - 시작 화면에서 싱글플레이 또는 멀티플레이 선택 후 게임 진행
 
 ---

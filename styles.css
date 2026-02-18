@@ -6,23 +6,34 @@
   --text: #e5efff;
   --muted: #7f95bf;
   --accent: #42b6ff;
+  --good: #61d48f;
   --warn: #d5ad52;
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
   min-height: 100vh;
   font-family: "Noto Sans KR", sans-serif;
   color: var(--text);
-  background: radial-gradient(circle at 20% 10%, #1d2f4f 0%, #091735 30%, #020b20 100%);
+  background: radial-gradient(
+    circle at 20% 10%,
+    #1d2f4f 0%,
+    #091735 30%,
+    #020b20 100%
+  );
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 18px;
 }
 
+/* ===============================
+   앱 프레임
+================================ */
 .app {
   width: min(1080px, 100%);
   min-height: 780px;
@@ -33,17 +44,35 @@ body {
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
 }
 
-.screen { display: none; }
-.screen.active { display: block; }
+.screen {
+  display: none;
+  opacity: 0;
+  transform: translateY(12px) scale(0.98);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
 
-h1, h2 { margin: 0; }
+.screen.active {
+  display: block;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
 
+h1, h2 {
+  margin: 0;
+}
+
+/* ===============================
+   공통 텍스트
+================================ */
 .subtitle,
 .hint,
 .event-log {
   color: var(--muted);
 }
 
+/* ===============================
+   버튼
+================================ */
 .button-row,
 .room-controls,
 .game-controls {
@@ -56,14 +85,21 @@ button {
   border: 0;
   border-radius: 10px;
   padding: 12px 20px;
-  font-size: 1.03rem;
+  font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
-  transition: 0.2s ease;
+  transition: transform 0.2s ease, filter 0.2s ease;
 }
 
-button:hover:enabled { filter: brightness(1.08); }
-button:disabled { opacity: 0.45; cursor: not-allowed; }
+button:hover:enabled {
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
 
 .primary {
   background: linear-gradient(180deg, #58c6ff, #2b98e8);
@@ -75,6 +111,9 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
   color: #f5f9ff;
 }
 
+/* ===============================
+   로비 / 방
+================================ */
 #room-screen {
   min-height: 720px;
 }
@@ -87,7 +126,9 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
   padding: 22px;
 }
 
-.hidden { display: none; }
+.hidden {
+  display: none;
+}
 
 .lobby-tabs {
   display: flex;
@@ -100,6 +141,7 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
   background: #96b4d6;
   color: #1d2b45;
   padding: 12px 24px;
+  font-weight: 700;
 }
 
 .tab-btn.active {
@@ -111,7 +153,6 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
 .lobby-list {
   display: grid;
   gap: 14px;
-  margin-bottom: 10px;
 }
 
 .lobby-card {
@@ -130,7 +171,7 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
 
 .lobby-title-row h3 {
   margin: 0;
-  font-size: 2rem;
+  font-size: 1.4rem;
 }
 
 .lobby-count {
@@ -140,15 +181,14 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
   font-weight: 700;
 }
 
+/* ===============================
+   플레이어 카드
+================================ */
 .room-header {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-bottom: 14px;
-}
-
-.room-header h2 {
-  font-size: 2.7rem;
 }
 
 .badge {
@@ -157,6 +197,7 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
   border-radius: 999px;
   padding: 6px 12px;
   font-weight: 700;
+  font-size: 0.85rem;
 }
 
 .player-grid {
@@ -174,31 +215,27 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
   border: 1px solid #2f466f;
   border-radius: 14px;
   padding: 14px;
+  display: grid;
+  gap: 6px;
 }
 
 .player-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 1.8rem;
-  margin-bottom: 8px;
-}
-
-.player-name {
-  color: #d7e4ff;
-  font-size: 2.1rem;
 }
 
 .status-ready {
-  color: #61d48f;
-  font-size: 1.8rem;
+  color: var(--good);
 }
 
 .status-wait {
   color: var(--warn);
-  font-size: 1.8rem;
 }
 
+/* ===============================
+   게임
+================================ */
 .turn-header {
   background: var(--panel-soft);
   border: 1px solid #3f547b;
@@ -207,8 +244,16 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
   margin-bottom: 10px;
 }
 
-.turn-chip { padding: 0 4px; border-radius: 8px; }
-.turn-chip.active { color: var(--accent); font-weight: 800; }
+.turn-chip {
+  padding: 0 4px;
+  border-radius: 8px;
+}
+
+.turn-chip.active {
+  color: var(--accent);
+  font-weight: 800;
+  text-shadow: 0 0 10px rgba(66, 182, 255, 0.45);
+}
 
 #board {
   width: 100%;
@@ -229,11 +274,24 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
   padding: 0 14px;
 }
 
-.rolling { animation: spin 0.55s ease; }
-@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+/* ===============================
+   애니메이션
+================================ */
+.rolling {
+  animation: spin 0.55s ease;
+}
 
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ===============================
+   반응형
+================================ */
 @media (max-width: 900px) {
   .room-header h2,
-  .lobby-title-row h3 { font-size: 1.7rem; }
-  .player-top, .player-name, .status-ready, .status-wait { font-size: 1.1rem; }
+  .lobby-title-row h3 {
+    font-size: 1.4rem;
+  }
 }
