@@ -39,8 +39,48 @@ body {
 
 #start-screen h1 {
   font-family: 'DNFBitBitv2', 'A2z', sans-serif;
-  font-size: clamp(2.5rem, 4vw, 4rem);
+  font-size: clamp(3rem, 6.3vw, 6.1rem);
   letter-spacing: 0.5px;
+}
+
+
+#start-screen {
+  min-height: 660px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 120px;
+}
+
+.start-hero {
+  display: grid;
+  gap: 10px;
+}
+
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.start-rocket {
+  font-size: clamp(3.2rem, 6vw, 5rem);
+  filter: drop-shadow(0 8px 18px rgba(45, 182, 255, 0.35));
+}
+
+#start-screen .subtitle {
+  margin: 0;
+  font-size: clamp(1.05rem, 1.8vw, 1.85rem);
+  color: #8eb1e4;
+}
+
+.start-actions button {
+  min-width: 180px;
+  min-height: 60px;
+  border-radius: 14px;
+  font-size: 2rem;
 }
 
 .app {
@@ -271,6 +311,20 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
 @media (max-width: 900px) {
+  #start-screen {
+    gap: 80px;
+  }
+
+  .title-row {
+    gap: 14px;
+  }
+
+  .start-actions button {
+    min-width: 150px;
+    min-height: 52px;
+    font-size: 1.4rem;
+  }
+
   .lobby-title-row h3,
   .room-header h2 { font-size: 1.4rem; }
   .event-log { font-size: 1.15rem; }
