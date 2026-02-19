@@ -4,75 +4,66 @@
   --panel-soft: #162746;
   --line: #35548a;
   --text: #e5efff;
-  --muted: #7f95bf;
-  --accent: #42b6ff;
-  --good: #61d48f;
+  --muted: #9bb1d8;
+  --accent: #42c6ff;
   --warn: #d5ad52;
 }
 
-* {
-  box-sizing: border-box;
+@font-face {
+  font-family: 'DNFBitBitv2';
+  font-style: normal;
+  font-weight: 400;
+  src: url('https://cdn.df.nexon.com/img/common/font/DNFBitBitv2.otf') format('opentype');
 }
+
+@font-face {
+  font-family: 'A2z';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/%EC%97%90%EC%9D%B4%ED%88%AC%EC%A7%80%EC%B2%B4-4Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
   min-height: 100vh;
-  font-family: "Noto Sans KR", sans-serif;
+  font-family: 'A2z', 'Noto Sans KR', sans-serif;
   color: var(--text);
-  background: radial-gradient(
-    circle at 20% 10%,
-    #1d2f4f 0%,
-    #091735 30%,
-    #020b20 100%
-  );
+  background: radial-gradient(circle at 20% 10%, #1d2f4f 0%, #091735 40%, #020b20 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 18px;
 }
 
-/* ===============================
-   앱 프레임
-================================ */
+#start-screen h1 {
+  font-family: 'DNFBitBitv2', 'A2z', sans-serif;
+  font-size: clamp(2.5rem, 4vw, 4rem);
+  letter-spacing: 0.5px;
+}
+
 .app {
-  width: min(1080px, 100%);
-  min-height: 780px;
-  background: rgba(5, 16, 42, 0.94);
-  border: 1px solid rgba(88, 124, 184, 0.45);
-  border-radius: 16px;
+  width: min(960px, 100%);
+  min-height: 720px;
+  background: rgba(3, 16, 43, 0.94);
+  border: 1px solid rgba(60, 101, 170, 0.55);
+  border-radius: 18px;
   padding: 22px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.55);
 }
 
-.screen {
-  display: none;
-  opacity: 0;
-  transform: translateY(12px) scale(0.98);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
+.screen { display: none; }
+.screen.active { display: block; }
 
-.screen.active {
-  display: block;
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
+h1, h2 { margin: 0; }
 
-h1, h2 {
-  margin: 0;
-}
-
-/* ===============================
-   공통 텍스트
-================================ */
 .subtitle,
 .hint,
 .event-log {
   color: var(--muted);
 }
 
-/* ===============================
-   버튼
-================================ */
 .button-row,
 .room-controls,
 .game-controls {
@@ -85,21 +76,14 @@ button {
   border: 0;
   border-radius: 10px;
   padding: 12px 20px;
-  font-size: 1rem;
+  font-size: 1.03rem;
   font-weight: 700;
   cursor: pointer;
-  transition: transform 0.2s ease, filter 0.2s ease;
+  transition: 0.2s ease;
 }
 
-button:hover:enabled {
-  transform: translateY(-1px);
-  filter: brightness(1.08);
-}
-
-button:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-}
+button:hover:enabled { filter: brightness(1.08); }
+button:disabled { opacity: 0.45; cursor: not-allowed; }
 
 .primary {
   background: linear-gradient(180deg, #58c6ff, #2b98e8);
@@ -111,24 +95,19 @@ button:disabled {
   color: #f5f9ff;
 }
 
-/* ===============================
-   로비 / 방
-================================ */
 #room-screen {
-  min-height: 720px;
+  min-height: 680px;
 }
 
 .panel-block {
   background: rgba(10, 27, 59, 0.95);
   border: 1px solid rgba(63, 93, 145, 0.8);
   border-radius: 16px;
-  min-height: 680px;
+  min-height: 630px;
   padding: 22px;
 }
 
-.hidden {
-  display: none;
-}
+.hidden { display: none; }
 
 .lobby-tabs {
   display: flex;
@@ -141,7 +120,6 @@ button:disabled {
   background: #96b4d6;
   color: #1d2b45;
   padding: 12px 24px;
-  font-weight: 700;
 }
 
 .tab-btn.active {
@@ -153,6 +131,7 @@ button:disabled {
 .lobby-list {
   display: grid;
   gap: 14px;
+  margin-bottom: 10px;
 }
 
 .lobby-card {
@@ -171,7 +150,7 @@ button:disabled {
 
 .lobby-title-row h3 {
   margin: 0;
-  font-size: 1.4rem;
+  font-size: 1.8rem;
 }
 
 .lobby-count {
@@ -181,14 +160,15 @@ button:disabled {
   font-weight: 700;
 }
 
-/* ===============================
-   플레이어 카드
-================================ */
 .room-header {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-bottom: 14px;
+}
+
+.room-header h2 {
+  font-size: 2.2rem;
 }
 
 .badge {
@@ -197,7 +177,6 @@ button:disabled {
   border-radius: 999px;
   padding: 6px 12px;
   font-weight: 700;
-  font-size: 0.85rem;
 }
 
 .player-grid {
@@ -215,54 +194,63 @@ button:disabled {
   border: 1px solid #2f466f;
   border-radius: 14px;
   padding: 14px;
-  display: grid;
-  gap: 6px;
 }
 
 .player-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  font-size: 1.2rem;
+  margin-bottom: 8px;
 }
 
 .status-ready {
-  color: var(--good);
+  color: #61d48f;
+  font-size: 1.1rem;
 }
 
 .status-wait {
   color: var(--warn);
+  font-size: 1.1rem;
 }
 
-/* ===============================
-   게임
-================================ */
+#game-screen {
+  border: 1px solid rgba(63, 104, 170, 0.45);
+  border-radius: 18px;
+  padding: 18px;
+  background: linear-gradient(180deg, rgba(8, 24, 56, 0.85), rgba(2, 13, 35, 0.9));
+}
+
 .turn-header {
-  background: var(--panel-soft);
-  border: 1px solid #3f547b;
+  background: #2a3958;
+  border: 1px solid #47649c;
   border-radius: 12px;
-  padding: 10px 14px;
-  margin-bottom: 10px;
+  padding: 12px 16px;
+  margin-bottom: 12px;
 }
 
-.turn-chip {
-  padding: 0 4px;
-  border-radius: 8px;
-}
+#turn-display { font-size: clamp(1.8rem, 2.7vw, 2.2rem); }
+.turn-chip { padding: 0 2px; border-radius: 6px; }
+.turn-chip.active { color: var(--accent); font-weight: 800; }
 
-.turn-chip.active {
-  color: var(--accent);
-  font-weight: 800;
-  text-shadow: 0 0 10px rgba(66, 182, 255, 0.45);
+.board-wrap {
+  border: 1px solid #3a5b95;
+  border-radius: 14px;
+  background: radial-gradient(circle at center, #14274d 0%, #0c1a39 80%, #091631 100%);
+  padding: 8px;
 }
 
 #board {
   width: 100%;
-  max-width: 880px;
-  border: 1px solid #3a4d72;
-  border-radius: 12px;
-  background: linear-gradient(180deg, #18253b, #101828);
+  max-width: 920px;
+  border-radius: 10px;
+  background: transparent;
   display: block;
   margin: 0 auto;
+}
+
+.game-controls {
+  margin-top: 2px;
 }
 
 .dice-result {
@@ -274,24 +262,16 @@ button:disabled {
   padding: 0 14px;
 }
 
-/* ===============================
-   애니메이션
-================================ */
-.rolling {
-  animation: spin 0.55s ease;
+.event-log {
+  margin-top: 14px;
+  font-size: 1.65rem;
 }
 
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
+.rolling { animation: spin 0.55s ease; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-/* ===============================
-   반응형
-================================ */
 @media (max-width: 900px) {
-  .room-header h2,
-  .lobby-title-row h3 {
-    font-size: 1.4rem;
-  }
+  .lobby-title-row h3,
+  .room-header h2 { font-size: 1.4rem; }
+  .event-log { font-size: 1.15rem; }
 }
